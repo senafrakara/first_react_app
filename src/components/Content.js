@@ -1,9 +1,14 @@
 import React, {useState,useEffect} from 'react'
 import Person from "./Person";
 import Image from "./Image";
+import { contentContext } from '../context';
 
 const Content = () => {
-    const [personList, setPersonList] = useState([
+    const [page,setPage] = useState(1);
+    const [imageList, setImageList] = useState([]);
+
+
+   /* const [personList, setPersonList] = useState([
         {
             isim:"Berker",
             okul:"odtü",
@@ -22,12 +27,10 @@ const Content = () => {
             cinsiyet:"kadın",
             yas:19
         }]
-    );
-
-    const [imageList, setImageList] = useState([]);
+    ); */
 
     const getImageList = () =>{
-        fetch('https://picsum.photos/v2/list?pae=1&limit=100')
+        fetch(`https://picsum.photos/v2/list?page=${page}&limit=100`)
         .then(response=>response.json())
         .then(data=>{
             //console.log(data)
@@ -35,14 +38,21 @@ const Content = () => {
         })
     }
 
+    const deleteImage = (silinecekId) => {
+        setImageList(imageList.filter(img => img.id != silinecekId))
+    }
+
     useEffect(() => {
         getImageList()
-    }, [])
+    }, [page])
     
     return(
+        <contentContext.Provider value={{page, deleteImage}}>
+        <div className='content'>
         <div className='container'>
             <h2>Person List::</h2>
-        
+            <input type="range" step="1" min="1" max="10" value={page} onInput={(event) => {setPage(event.target.value)}} />{page}
+            <hr/>
             <div className='row'>
                 {
                     imageList.map((img) => {
@@ -53,6 +63,7 @@ const Content = () => {
                             url={img.url}
                             w={img.widht}
                             h={img.height}
+                            id={img.id}
                             />
                         )
                     })
@@ -87,7 +98,8 @@ const Content = () => {
                  /> */}
             </div>
         </div>
-        
+        </div>
+        </contentContext.Provider>
     )
 }
 export default Content;
