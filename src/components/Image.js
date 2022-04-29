@@ -4,8 +4,8 @@ import { contentContext } from "../context";
 
 const Image = (props) => {
 
-   const {page, deleteImage} = useContext(contentContext)
-    const {id, author,url, w, h} = props
+   const {imageListDispatch} = useContext(contentContext)
+    const {id, author,url, weight, height} = props
     return <div className="col-md-3">
     <div className="card">
     <img src={`https://picsum.photos/id/${id}/300/300`} className="card-img-top" alt="..."/>
@@ -14,11 +14,12 @@ const Image = (props) => {
         <p className="card-text">{url}</p>
     </div>
     <ul className="list-group list-group-flush">
-        <li className="list-group-item">{w}</li>
-        <li className="list-group-item">{h}</li>
+        <li className="list-group-item">{weight}</li>
+        <li className="list-group-item">{height}</li>
     </ul>
     <div className="card-body">
-        <button type="button" className="btn btn-danger" onClick={ () => {deleteImage(id)}}>Delete</button>
+        <button type="button" className="btn btn-danger" onClick={ () => { imageListDispatch({type:'deleteImage', payload:id})}}>Delete</button>
+        <button type="button" className="btn btn-primary" onClick={ () => { imageListDispatch({type:'addImage', payload:props})}}>Copy</button>
         
     </div>
     </div>
